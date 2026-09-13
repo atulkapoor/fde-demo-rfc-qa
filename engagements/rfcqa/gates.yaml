@@ -1,0 +1,14 @@
+data_access:
+  note: sqlite standards.db returned 58 real documents (8.1MB, full text)
+  at: '2026-09-13'
+security_review:
+  note: 'self-review for the public demo: local corpus and sqlite, no egress, judge
+    runs on a local endpoint'
+  at: '2026-09-13'
+overrides:
+- gate: offline_evaluability
+  reason: 'local judge qwen3:0.6b on Ollama; calibration against the eval owner''s
+    hand grades runs BEFORE any judged number is quoted -- published prediction: it
+    fails the bar (SLMJury 67.9%)'
+  at: '2026-09-13'
+  against: Freeform output needs a judge, and nothing may leave here.

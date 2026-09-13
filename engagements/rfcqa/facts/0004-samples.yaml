@@ -1,0 +1,10 @@
+session_id: 0004-samples
+respondent:
+  role: system
+  name: null
+facts:
+- dimension: output_shape
+  value: freeform
+  provenance: artifact
+  kind: requirement
+  source: sample pairs

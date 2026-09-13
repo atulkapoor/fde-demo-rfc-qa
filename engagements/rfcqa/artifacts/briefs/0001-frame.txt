@@ -1,0 +1,1 @@
+Answer engineers' protocol questions in plain prose from the internal standards corpus; 58 documents; data cannot leave; nobody is waiting, answers land in a review queue; engineers look up one standard at a time as plain text questions.

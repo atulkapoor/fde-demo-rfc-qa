@@ -1,0 +1,9 @@
+corpus/
+venv/
+engagement-prep/
+standards.db
+baseline.yaml
+__pycache__/
+project/.implement/
+project/data/
+calibration-err.log

@@ -1,0 +1,37 @@
+session_id: 0001-frame
+respondent:
+  role: system
+  name: null
+facts:
+- dimension: corpus_size
+  value: 58
+  provenance: artifact
+  kind: requirement
+  span:
+  - 88
+  - 90
+  source: statement
+- dimension: data_residency
+  value: cannot_leave
+  provenance: artifact
+  kind: requirement
+  span:
+  - 102
+  - 119
+  source: statement
+- dimension: human_waiting
+  value: 'no'
+  provenance: artifact
+  kind: requirement
+  span:
+  - 121
+  - 138
+  source: statement
+- dimension: query_pattern
+  value: lookup
+  provenance: artifact
+  kind: requirement
+  span:
+  - 182
+  - 189
+  source: statement

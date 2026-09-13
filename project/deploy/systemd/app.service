@@ -1,0 +1,23 @@
+# Rung zero, and frequently the right answer rather than the lesser one.
+# Understood by anyone who has administered a Linux box, restarts on
+# failure, starts on boot, and adds nothing anybody has to learn.
+[Unit]
+Description=Generated application
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=app
+WorkingDirectory=/opt/app
+ExecStart=/opt/app/.venv/bin/python -m app.pipeline
+Restart=on-failure
+RestartSec=5
+# Least privilege costs nothing here and is awkward to add later.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/app
+
+[Install]
+WantedBy=multi-user.target

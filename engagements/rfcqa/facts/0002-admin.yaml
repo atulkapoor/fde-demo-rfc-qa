@@ -1,0 +1,54 @@
+session_id: 0002-admin
+respondent:
+  role: admin
+  name: Atul Kapoor
+facts:
+- dimension: accelerator
+  value: none
+  provenance: interview
+  kind: environment
+- dimension: access_model
+  value: single_operator
+  provenance: interview
+  kind: requirement
+- dimension: availability_target
+  value: business_hours
+  provenance: interview
+  kind: requirement
+- dimension: corpus_churn
+  value: static
+  provenance: interview
+  kind: requirement
+- dimension: environment_lifetime
+  value: permanent
+  provenance: interview
+  kind: requirement
+- dimension: existing_iac_tool
+  value: none
+  provenance: interview
+  kind: environment
+- dimension: hosting
+  value: on-prem
+  provenance: interview
+  kind: requirement
+- dimension: input_format
+  value: text
+  provenance: interview
+  kind: requirement
+  additive: true
+- dimension: licence_posture
+  value: internal_only
+  provenance: interview
+  kind: requirement
+- dimension: operates_after_handover
+  value: app_team
+  provenance: interview
+  kind: requirement
+- dimension: recall_span
+  value: within_turn
+  provenance: interview
+  kind: requirement
+- dimension: arrival_rate
+  value: 30
+  provenance: interview
+  kind: requirement

@@ -1,0 +1,28 @@
+{"id": "qa-00", "query": "Which HTTP status code says a resource has moved permanently?", "relevant": ["rfc9110"]}
+{"id": "qa-01", "query": "Which TLS version does RFC 8446 specify?", "relevant": ["rfc8446"]}
+{"id": "qa-02", "query": "What is the TCP connection-establishment procedure called?", "relevant": ["rfc9293"]}
+{"id": "qa-03", "query": "Which SMTP command starts a mail transaction?", "relevant": ["rfc5321"]}
+{"id": "qa-04", "query": "What is the maximum length of a single DNS label?", "relevant": ["rfc1035"]}
+{"id": "qa-05", "query": "Which cookie attribute limits a cookie to secure channels?", "relevant": ["rfc6265"]}
+{"id": "qa-06", "query": "What are the parts of a JWT in its compact serialization?", "relevant": ["rfc7519"]}
+{"id": "qa-07", "query": "In OAuth 2.0, what does the authorization code grant flow return to the client first?", "relevant": ["rfc6749"]}
+{"id": "qa-08", "query": "What transport protocol does QUIC use underneath?", "relevant": ["rfc9000"]}
+{"id": "qa-09", "query": "What are JSON's two structured types?", "relevant": ["rfc8259"]}
+{"id": "qa-10", "query": "What are the five generic components of a URI?", "relevant": ["rfc3986"]}
+{"id": "qa-11", "query": "Which transfer coding provides message framing when the length is unknown up front?", "relevant": ["rfc9112"]}
+{"id": "qa-12", "query": "How many bits is an IPv6 address?", "relevant": ["rfc8200"]}
+{"id": "qa-13", "query": "Which HTTP header upgrades a connection to the WebSocket protocol?", "relevant": ["rfc6455"]}
+{"id": "qa-14", "query": "Which frame must each HTTP/2 endpoint send first on a connection?", "relevant": ["rfc9113"]}
+{"id": "qa-15", "query": "What does RFC 9457 define for HTTP APIs?", "relevant": ["rfc9457"]}
+{"id": "qa-16", "query": "Which UUID version is based on a Unix epoch timestamp?", "relevant": ["rfc9562"]}
+{"id": "qa-17", "query": "What does CBOR stand for?", "relevant": ["rfc8949"]}
+{"id": "qa-18", "query": "How does a client send a bearer token in an HTTP request header?", "relevant": ["rfc6750"]}
+{"id": "qa-19", "query": "What line-length limits does RFC 5322 set for message lines?", "relevant": ["rfc5322"]}
+{"id": "qa-20", "query": "Which response directive sets how long a cache may consider a response fresh?", "relevant": ["rfc9111"]}
+{"id": "qa-21", "query": "Which file does the Robots Exclusion Protocol standardize?", "relevant": ["rfc9309"]}
+{"id": "qa-22", "query": "What does ACME stand for?", "relevant": ["rfc8555"]}
+{"id": "qa-23", "query": "How are credentials encoded in HTTP Basic authentication?", "relevant": ["rfc7617"]}
+{"id": "qa-24", "query": "Which DNS record type declares an alias for a canonical name?", "relevant": ["rfc1034"]}
+{"id": "qa-25", "query": "Which routing protocol does RFC 4271 specify?", "relevant": ["rfc4271"]}
+{"id": "qa-26", "query": "What is the HTTP/2 header-compression format called?", "relevant": ["rfc7540"]}
+{"id": "qa-27", "query": "What does MIME stand for?", "relevant": ["rfc2045"]}

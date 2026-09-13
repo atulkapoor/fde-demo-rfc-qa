@@ -1,0 +1,9 @@
+session_id: 0003-eval_owner
+respondent:
+  role: eval_owner
+  name: Atul Kapoor
+facts:
+- dimension: output_shape
+  value: freeform
+  provenance: interview
+  kind: requirement

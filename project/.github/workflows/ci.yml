@@ -1,0 +1,30 @@
+name: ci
+on: [push, pull_request]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: pip install -e .
+
+      # Importing this asserts placement. Data that may not leave
+      # cannot leave by construction, and a change that moves a
+      # sensitive component outside fails here rather than in review.
+      - name: Assert the boundary
+        run: python -c "import app.boundary"
+      # The embedding and index set a ceiling on everything
+      # downstream -- no reranking or prompting recovers a
+      # document that was never retrieved. This measures the
+      # ceiling by itself, no model in the loop.
+      - name: Evaluate retrieval
+        run: python evals/retrieval.py --min-recall 0.0
+      # Gating on tests alone measures whether the code runs, not
+      # whether it is right. The evaluation is the one that says so --
+      # and it prints every layer, adversarial included, so scoring
+      # well on golden and badly on adversarial is visible in this
+      # step's own output rather than averaged away.
+      - name: Evaluate
+        run: python evals/harness.py --min-score 0.0

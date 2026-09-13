@@ -1,0 +1,19 @@
+{"id": "qa-27", "verified": true, "input": "What does MIME stand for?", "output": "Multipurpose Internet Mail Extensions."}
+{"id": "qa-23", "verified": true, "input": "How are credentials encoded in HTTP Basic authentication?", "output": "user-id and password joined by a colon, then Base64-encoded."}
+{"id": "qa-03", "verified": true, "input": "Which SMTP command starts a mail transaction?", "output": "MAIL FROM begins the transaction, identifying the sender's reverse-path."}
+{"id": "qa-21", "verified": true, "input": "Which file does the Robots Exclusion Protocol standardize?", "output": "robots.txt \u2014 crawlers check it to learn which URIs they may access."}
+{"id": "qa-04", "verified": true, "input": "What is the maximum length of a single DNS label?", "output": "63 octets \u2014 labels are limited to 63 octets or less."}
+{"id": "qa-24", "verified": true, "input": "Which DNS record type declares an alias for a canonical name?", "output": "CNAME \u2014 it maps an alias to the canonical name."}
+{"id": "qa-20", "verified": true, "input": "Which response directive sets how long a cache may consider a response fresh?", "output": "max-age, in the Cache-Control header, gives the freshness lifetime in seconds."}
+{"id": "qa-14", "verified": true, "input": "Which frame must each HTTP/2 endpoint send first on a connection?", "output": "A SETTINGS frame \u2014 it opens the HTTP/2 connection preface."}
+{"id": "qa-02", "verified": true, "input": "What is the TCP connection-establishment procedure called?", "output": "The three-way handshake: SYN, SYN-ACK, then ACK."}
+{"id": "qa-15", "verified": true, "input": "What does RFC 9457 define for HTTP APIs?", "output": "Problem Details \u2014 a machine-readable error format, typically application/problem+json."}
+{"id": "qa-16", "verified": true, "input": "Which UUID version is based on a Unix epoch timestamp?", "output": "UUID version 7 (UUIDv7) uses a Unix-epoch millisecond timestamp in its most significant bits."}
+{"id": "qa-11", "verified": true, "input": "Which transfer coding provides message framing when the length is unknown up front?", "output": "Chunked transfer coding, signalled with Transfer-Encoding: chunked."}
+{"id": "qa-25", "verified": true, "input": "Which routing protocol does RFC 4271 specify?", "output": "BGP-4, the Border Gateway Protocol version 4."}
+{"id": "qa-06", "verified": true, "input": "What are the parts of a JWT in its compact serialization?", "output": "Three parts separated by dots: the JOSE header, the JWT claims set, and the signature."}
+{"id": "qa-01", "verified": true, "input": "Which TLS version does RFC 8446 specify?", "output": "TLS 1.3 \u2014 RFC 8446 is the specification of the Transport Layer Security protocol version 1.3."}
+{"id": "qa-10", "verified": true, "input": "What are the five generic components of a URI?", "output": "Scheme, authority, path, query and fragment."}
+{"id": "qa-18", "verified": true, "input": "How does a client send a bearer token in an HTTP request header?", "output": "In the Authorization header using the Bearer scheme: Authorization: Bearer <token>."}
+{"id": "qa-22", "verified": true, "input": "What does ACME stand for?", "output": "Automatic Certificate Management Environment."}
+{"id": "qa-12", "verified": true, "input": "How many bits is an IPv6 address?", "output": "128 bits."}

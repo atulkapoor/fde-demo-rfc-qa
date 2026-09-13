@@ -1,0 +1,19 @@
+{"id": "qa-27", "q": "What does MIME stand for?", "judge": "correct", "hand": "correct", "why": "exact expansion", "match": true}
+{"id": "qa-23", "q": "How are credentials encoded in HTTP Basic authentication?", "judge": "correct", "hand": "partial", "why": "Base64 right; never states the user:password colon-join", "match": false}
+{"id": "qa-03", "q": "Which SMTP command starts a mail transaction?", "judge": "correct", "hand": "correct", "why": "MAIL command = the transaction opener", "match": true}
+{"id": "qa-21", "q": "Which file does the Robots Exclusion Protocol standardize?", "judge": "correct", "hand": "correct", "why": "robots.txt", "match": true}
+{"id": "qa-04", "q": "What is the maximum length of a single DNS label?", "judge": "correct", "hand": "correct", "why": "63 octets", "match": true}
+{"id": "qa-24", "q": "Which DNS record type declares an alias for a canonical name?", "judge": "correct", "hand": "incorrect", "why": "says PTR; the alias record is CNAME", "match": false}
+{"id": "qa-20", "q": "Which response directive sets how long a cache may consider a response fresh?", "judge": "correct", "hand": "incorrect", "why": "says max-stale/min-fresh (request directives); freshness lifetime is max-age", "match": false}
+{"id": "qa-14", "q": "Which frame must each HTTP/2 endpoint send first on a connection?", "judge": "incorrect", "hand": "incorrect", "why": "says GOAWAY; the opening frame is SETTINGS", "match": true}
+{"id": "qa-02", "q": "What is the TCP connection-establishment procedure called?", "judge": "correct", "hand": "correct", "why": "three-way handshake", "match": true}
+{"id": "qa-15", "q": "What does RFC 9457 define for HTTP APIs?", "judge": "correct", "hand": "correct", "why": "problem details, machine-readable errors", "match": true}
+{"id": "qa-16", "q": "Which UUID version is based on a Unix epoch timestamp?", "judge": "incorrect", "hand": "incorrect", "why": "says v1/v6 (Gregorian epoch); Unix-epoch version is v7", "match": true}
+{"id": "qa-11", "q": "Which transfer coding provides message framing when the length is unknown up front?", "judge": "correct", "hand": "correct", "why": "chunked transfer coding", "match": true}
+{"id": "qa-25", "q": "Which routing protocol does RFC 4271 specify?", "judge": "correct", "hand": "correct", "why": "BGP-4", "match": true}
+{"id": "qa-06", "q": "What are the parts of a JWT in its compact serialization?", "judge": "correct", "hand": "incorrect", "why": "names none of the three parts (header, claims, signature)", "match": false}
+{"id": "qa-01", "q": "Which TLS version does RFC 8446 specify?", "judge": "correct", "hand": "correct", "why": "TLS 1.3", "match": true}
+{"id": "qa-10", "q": "What are the five generic components of a URI?", "judge": "correct", "hand": "correct", "why": "all five components named", "match": true}
+{"id": "qa-18", "q": "How does a client send a bearer token in an HTTP request header?", "judge": "correct", "hand": "correct", "why": "Authorization: Bearer", "match": true}
+{"id": "qa-22", "q": "What does ACME stand for?", "judge": "correct", "hand": "correct", "why": "exact expansion", "match": true}
+{"id": "qa-12", "q": "How many bits is an IPv6 address?", "judge": "correct", "hand": "incorrect", "why": "says 60 bits; IPv6 is 128", "match": false}
