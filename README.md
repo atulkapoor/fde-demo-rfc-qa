@@ -1,5 +1,7 @@
 # fde-demo-rfc-qa
 
+> **The deliverable is in this repo**: [`project/`](project/) — the emitted, implemented, deployable output (pipeline service, deploy assets, runbooks, evals, ARCHITECTURE.md, RISKS.md). Start at [`project/README.md`](project/README.md).
+
 The third complete engagement through
 [fde-framework](https://github.com/atulkapoor/fde-framework): freeform
 question-answering over 58 real IETF RFCs — the shape that needs a model at
