@@ -27,4 +27,11 @@ jobs:
       # well on golden and badly on adversarial is visible in this
       # step's own output rather than averaged away.
       - name: Evaluate
-        run: python evals/harness.py --min-score 0.0
+        # Public mirror: golden answers ship in this repo's root, but the
+        # corpus regenerates (prepare.py) -- skip when it is absent.
+        run: |
+          if [ -d data/corpus ] && [ -s evals/golden.jsonl ]; then
+            python evals/harness.py --min-score 0.0
+          else
+            echo "public mirror: corpus/exam not present -- evaluation skipped (see README)"
+          fi

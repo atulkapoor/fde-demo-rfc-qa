@@ -33,7 +33,9 @@ The prediction on record was confirmed in direction (67.9% published,
 
 ## Deployed and answering
 
-The emitted service (fde-framework 0.1.11), run as its systemd unit would,
+The service entrypoint (built on 0.1.10 hours before 0.1.11 released;
+the 0.1.11 entrypoint backported rather than rebuilding over the measured
+run), run as its systemd unit would,
 with the local model behind it:
 
 ```
@@ -84,5 +86,8 @@ the evidence patterns). The corpus itself regenerates from rfc-editor.org.
   n=19, grades and reasons published per-case. The references they grade
   against were machine-verified against RFC text at authoring time.
 - Operational baseline figures are a stated scenario, labelled as such.
+- The committed `app/llm.py` sends no max-token cap — the receipts demo's
+  sibling caps at 256 after measuring the cost of an uncapped local model.
+  Left as measured here; the framework's emitted default gains the cap.
 - The framework's status stays **built, demonstrated, unproven** — three
   public runs on real data are still not a client production engagement.

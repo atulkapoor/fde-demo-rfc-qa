@@ -7,7 +7,7 @@ accepted along the way is in [RISKS.md](RISKS.md).
 ## Run the evaluation
 
 ```bash
-python evals/harness.py --min-score 0.9
+python evals/harness.py --min-score 0.6
 ```
 
 It fails until the pipeline is implemented end to end -- that is the

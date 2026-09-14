@@ -22,18 +22,35 @@ for n in dict.fromkeys(CORE):
         out.write_text(r.stdout)
     time.sleep(0.3)
 
-# verify the committed exam against the fetched texts, like authoring did
-bad = 0
-for p in json.load(open("authored-verified.json")):
-    text = Path(f"corpus/{p['rfc']}.txt").read_text(errors="replace")
-    # evidence patterns live in the authoring history; here we re-check
-    # the answer's key term appears in its source at all
-    if p["a"].split("—")[0].split(",")[0].strip().lower()[:20] not in text.lower():
-        bad += 0  # advisory only; authoring carried the strict patterns
+# Verify the committed exam against the fetched texts -- the same bar
+# authoring used: an answer whose key claim cannot be found in its source
+# is named, loudly. (authored-verified.json carries the strict patterns.)
+missing_docs, mismatches = [], []
+for p_ in json.load(open("authored-verified.json")):
+    path = Path(f"corpus/{p_['rfc']}.txt")
+    if not path.exists():
+        missing_docs.append(p_["rfc"])
+        continue
+    text = path.read_text(errors="replace").lower()
+    key = p_["a"].split("\u2014")[0].split(",")[0].strip().lower()[:24]
+    if key and key not in text:
+        mismatches.append((p_["rfc"], p_["q"][:50]))
+if missing_docs:
+    print(f"WARNING: {len(missing_docs)} source RFC(s) failed to fetch: {sorted(set(missing_docs))}")
+for rfc, q in mismatches:
+    print(f"WARNING: key claim not found in {rfc}: {q}")
+print(f"exam verification: {len(mismatches)} mismatch(es), {len(missing_docs)} missing doc(s)")
+
 con = sqlite3.connect("standards.db")
 con.execute("CREATE TABLE IF NOT EXISTS standards (id TEXT PRIMARY KEY, body TEXT)")
 for f in sorted(Path("corpus").glob("*.txt")):
     con.execute("INSERT OR REPLACE INTO standards VALUES (?,?)",
                 (f.stem, f.read_text(errors="replace")))
 con.commit()
-print("corpus", len(list(Path('corpus').glob('*.txt'))), "docs; store rebuilt")
+# The deliverable reads project/data/corpus -- populate it too.
+proj = Path("project/data/corpus")
+proj.mkdir(parents=True, exist_ok=True)
+for f in Path("corpus").glob("*.txt"):
+    (proj / f.name).write_text(f.read_text(errors="replace"))
+print("corpus", len(list(Path('corpus').glob('*.txt'))), "docs; store rebuilt;",
+      "project/data/corpus populated")
