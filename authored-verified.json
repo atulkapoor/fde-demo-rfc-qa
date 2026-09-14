@@ -2,191 +2,229 @@
  {
   "rfc": "rfc9110",
   "q": "Which HTTP status code says a resource has moved permanently?",
-  "a": "301 Moved Permanently \u2014 the target has a new permanent URI and future references should use it."
+  "a": "301 Moved Permanently \u2014 the target has a new permanent URI and future references should use it.",
+  "evidence": "301 \\(Moved Permanently\\)"
  },
  {
   "rfc": "rfc8446",
   "q": "Which TLS version does RFC 8446 specify?",
-  "a": "TLS 1.3 \u2014 RFC 8446 is the specification of the Transport Layer Security protocol version 1.3."
+  "a": "TLS 1.3 \u2014 RFC 8446 is the specification of the Transport Layer Security protocol version 1.3.",
+  "evidence": "Transport Layer Security \\(TLS\\) Protocol Version 1\\.3"
  },
  {
   "rfc": "rfc9293",
   "q": "What is the TCP connection-establishment procedure called?",
-  "a": "The three-way handshake: SYN, SYN-ACK, then ACK."
+  "a": "The three-way handshake: SYN, SYN-ACK, then ACK.",
+  "evidence": "three-way handshake"
  },
  {
   "rfc": "rfc5321",
   "q": "Which SMTP command starts a mail transaction?",
-  "a": "MAIL FROM begins the transaction, identifying the sender's reverse-path."
+  "a": "MAIL FROM begins the transaction, identifying the sender's reverse-path.",
+  "evidence": "MAIL FROM"
  },
  {
   "rfc": "rfc1035",
   "q": "What is the maximum length of a single DNS label?",
-  "a": "63 octets \u2014 labels are limited to 63 octets or less."
+  "a": "63 octets \u2014 labels are limited to 63 octets or less.",
+  "evidence": "63 octets or less"
  },
  {
   "rfc": "rfc6265",
   "q": "Which cookie attribute limits a cookie to secure channels?",
-  "a": "The Secure attribute \u2014 the cookie is only sent over secure (typically HTTPS) connections."
+  "a": "The Secure attribute \u2014 the cookie is only sent over secure (typically HTTPS) connections.",
+  "evidence": "Secure attribute"
  },
  {
   "rfc": "rfc7519",
   "q": "What are the parts of a JWT in its compact serialization?",
-  "a": "Three parts separated by dots: the JOSE header, the JWT claims set, and the signature."
+  "a": "Three parts separated by dots: the JOSE header, the JWT claims set, and the signature.",
+  "evidence": "JOSE Header"
  },
  {
   "rfc": "rfc6749",
   "q": "In OAuth 2.0, what does the authorization code grant flow return to the client first?",
-  "a": "An authorization code, which the client then exchanges for an access token."
+  "a": "An authorization code, which the client then exchanges for an access token.",
+  "evidence": "authorization code"
  },
  {
   "rfc": "rfc9000",
   "q": "What transport protocol does QUIC use underneath?",
-  "a": "UDP \u2014 QUIC is a multiplexed secure transport that runs on top of UDP."
+  "a": "UDP \u2014 QUIC is a multiplexed secure transport that runs on top of UDP.",
+  "evidence": "UDP"
  },
  {
   "rfc": "rfc8259",
   "q": "What are JSON's two structured types?",
-  "a": "Objects and arrays \u2014 the two structured types; the rest are primitives."
+  "a": "Objects and arrays \u2014 the two structured types; the rest are primitives.",
+  "evidence": "objects and arrays"
  },
  {
   "rfc": "rfc3986",
   "q": "What are the five generic components of a URI?",
-  "a": "Scheme, authority, path, query and fragment."
+  "a": "Scheme, authority, path, query and fragment.",
+  "evidence": "scheme, authority, path, query"
  },
  {
   "rfc": "rfc9112",
   "q": "Which transfer coding provides message framing when the length is unknown up front?",
-  "a": "Chunked transfer coding, signalled with Transfer-Encoding: chunked."
+  "a": "Chunked transfer coding, signalled with Transfer-Encoding: chunked.",
+  "evidence": "chunked transfer coding"
  },
  {
   "rfc": "rfc8200",
   "q": "How many bits is an IPv6 address?",
-  "a": "128 bits."
+  "a": "128 bits.",
+  "evidence": "128-bit"
  },
  {
   "rfc": "rfc6455",
   "q": "Which HTTP header upgrades a connection to the WebSocket protocol?",
-  "a": "The Upgrade header with the value websocket, alongside Connection: Upgrade."
+  "a": "The Upgrade header with the value websocket, alongside Connection: Upgrade.",
+  "evidence": "Upgrade"
  },
  {
   "rfc": "rfc9113",
   "q": "Which frame must each HTTP/2 endpoint send first on a connection?",
-  "a": "A SETTINGS frame \u2014 it opens the HTTP/2 connection preface."
+  "a": "A SETTINGS frame \u2014 it opens the HTTP/2 connection preface.",
+  "evidence": "SETTINGS frame"
  },
  {
   "rfc": "rfc9457",
   "q": "What does RFC 9457 define for HTTP APIs?",
-  "a": "Problem Details \u2014 a machine-readable error format, typically application/problem+json."
+  "a": "Problem Details \u2014 a machine-readable error format, typically application/problem+json.",
+  "evidence": "[Pp]roblem [Dd]etails"
  },
  {
   "rfc": "rfc9562",
   "q": "Which UUID version is based on a Unix epoch timestamp?",
-  "a": "UUID version 7 (UUIDv7) uses a Unix-epoch millisecond timestamp in its most significant bits."
+  "a": "UUID version 7 (UUIDv7) uses a Unix-epoch millisecond timestamp in its most significant bits.",
+  "evidence": "UUIDv7|UUID version 7"
  },
  {
   "rfc": "rfc8949",
   "q": "What does CBOR stand for?",
-  "a": "Concise Binary Object Representation."
+  "a": "Concise Binary Object Representation.",
+  "evidence": "Concise Binary Object Representation"
  },
  {
   "rfc": "rfc6750",
   "q": "How does a client send a bearer token in an HTTP request header?",
-  "a": "In the Authorization header using the Bearer scheme: Authorization: Bearer <token>."
+  "a": "In the Authorization header using the Bearer scheme: Authorization: Bearer <token>.",
+  "evidence": "Bearer"
  },
  {
   "rfc": "rfc5322",
   "q": "What line-length limits does RFC 5322 set for message lines?",
-  "a": "Lines should be no more than 78 characters and must be no more than 998 characters, excluding CRLF."
+  "a": "Lines should be no more than 78 characters and must be no more than 998 characters, excluding CRLF.",
+  "evidence": "998"
  },
  {
   "rfc": "rfc9111",
   "q": "Which response directive sets how long a cache may consider a response fresh?",
-  "a": "max-age, in the Cache-Control header, gives the freshness lifetime in seconds."
+  "a": "max-age, in the Cache-Control header, gives the freshness lifetime in seconds.",
+  "evidence": "max-age"
  },
  {
   "rfc": "rfc9309",
   "q": "Which file does the Robots Exclusion Protocol standardize?",
-  "a": "robots.txt \u2014 crawlers check it to learn which URIs they may access."
+  "a": "robots.txt \u2014 crawlers check it to learn which URIs they may access.",
+  "evidence": "robots\\.txt"
  },
  {
   "rfc": "rfc8555",
   "q": "What does ACME stand for?",
-  "a": "Automatic Certificate Management Environment."
+  "a": "Automatic Certificate Management Environment.",
+  "evidence": "Automatic Certificate Management Environment"
  },
  {
   "rfc": "rfc7617",
   "q": "How are credentials encoded in HTTP Basic authentication?",
-  "a": "user-id and password joined by a colon, then Base64-encoded."
+  "a": "user-id and password joined by a colon, then Base64-encoded.",
+  "evidence": "[Bb]ase64"
  },
  {
   "rfc": "rfc1034",
   "q": "Which DNS record type declares an alias for a canonical name?",
-  "a": "CNAME \u2014 it maps an alias to the canonical name."
+  "a": "CNAME \u2014 it maps an alias to the canonical name.",
+  "evidence": "CNAME"
  },
  {
   "rfc": "rfc4271",
   "q": "Which routing protocol does RFC 4271 specify?",
-  "a": "BGP-4, the Border Gateway Protocol version 4."
+  "a": "BGP-4, the Border Gateway Protocol version 4.",
+  "evidence": "Border Gateway Protocol"
  },
  {
   "rfc": "rfc7540",
   "q": "What is the HTTP/2 header-compression format called?",
-  "a": "HPACK, specified alongside HTTP/2."
+  "a": "HPACK, specified alongside HTTP/2.",
+  "evidence": "HPACK"
  },
  {
   "rfc": "rfc2045",
   "q": "What does MIME stand for?",
-  "a": "Multipurpose Internet Mail Extensions."
+  "a": "Multipurpose Internet Mail Extensions.",
+  "evidence": "Multipurpose Internet Mail Extensions"
  },
  {
   "rfc": "rfc9147",
   "q": "What does DTLS 1.3 provide for datagram transports?",
-  "a": "TLS-equivalent security \u2014 authentication, confidentiality and integrity \u2014 over unreliable datagram transport."
+  "a": "TLS-equivalent security \u2014 authentication, confidentiality and integrity \u2014 over unreliable datagram transport.",
+  "evidence": "[Dd]atagram"
  },
  {
   "rfc": "rfc6811",
   "q": "What does BGP prefix origin validation check?",
-  "a": "Whether the origin AS of a BGP route announcement is authorized for the prefix, using RPKI data."
+  "a": "Whether the origin AS of a BGP route announcement is authorized for the prefix, using RPKI data.",
+  "evidence": "[Oo]rigin [Vv]alidation"
  },
  {
   "rfc": "rfc9001",
   "q": "Which protocol secures QUIC's packets?",
-  "a": "TLS 1.3 \u2014 QUIC uses TLS 1.3 for its key negotiation, carried inside QUIC itself."
+  "a": "TLS 1.3 \u2014 QUIC uses TLS 1.3 for its key negotiation, carried inside QUIC itself.",
+  "evidence": "TLS"
  },
  {
   "rfc": "rfc7413",
   "q": "What does TCP Fast Open allow?",
-  "a": "Sending data in the SYN, saving a round trip when reconnecting to a server."
+  "a": "Sending data in the SYN, saving a round trip when reconnecting to a server.",
+  "evidence": "[Dd]ata in the SYN|SYN packet"
  },
  {
   "rfc": "rfc8484",
   "q": "What does DoH transport DNS queries over?",
-  "a": "HTTPS \u2014 DNS queries and responses are sent over HTTP/2-or-later secured with TLS."
+  "a": "HTTPS \u2014 DNS queries and responses are sent over HTTP/2-or-later secured with TLS.",
+  "evidence": "DNS [Qq]ueries over HTTPS|HTTPS"
  },
  {
   "rfc": "rfc8032",
   "q": "Which signature scheme does RFC 8032 define?",
-  "a": "EdDSA \u2014 Edwards-curve Digital Signature Algorithm, including Ed25519 and Ed448."
+  "a": "EdDSA \u2014 Edwards-curve Digital Signature Algorithm, including Ed25519 and Ed448.",
+  "evidence": "EdDSA|Edwards-[Cc]urve"
  },
  {
   "rfc": "rfc959",
   "q": "Which protocol does RFC 959 specify?",
-  "a": "FTP, the File Transfer Protocol."
+  "a": "FTP, the File Transfer Protocol.",
+  "evidence": "FILE TRANSFER PROTOCOL|File Transfer Protocol"
  },
  {
   "rfc": "rfc9580",
   "q": "What does RFC 9580 specify?",
-  "a": "OpenPGP \u2014 message encryption, signing and key formats."
+  "a": "OpenPGP \u2014 message encryption, signing and key formats.",
+  "evidence": "OpenPGP"
  },
  {
   "rfc": "rfc9162",
   "q": "What does Certificate Transparency provide?",
-  "a": "Public, append-only logs of issued TLS certificates so mis-issuance can be detected."
+  "a": "Public, append-only logs of issued TLS certificates so mis-issuance can be detected.",
+  "evidence": "[Cc]ertificate [Tt]ransparency"
  },
  {
   "rfc": "rfc6455",
   "q": "What header carries the client's random key in a WebSocket opening handshake?",
-  "a": "Sec-WebSocket-Key \u2014 the server answers with Sec-WebSocket-Accept."
+  "a": "Sec-WebSocket-Key \u2014 the server answers with Sec-WebSocket-Accept.",
+  "evidence": "Sec-WebSocket-Key"
  }
 ]

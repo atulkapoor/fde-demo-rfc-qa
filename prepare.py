@@ -22,23 +22,21 @@ for n in dict.fromkeys(CORE):
         out.write_text(r.stdout)
     time.sleep(0.3)
 
-# Verify the committed exam against the fetched texts -- the same bar
-# authoring used: an answer whose key claim cannot be found in its source
-# is named, loudly. (authored-verified.json carries the strict patterns.)
+# Verify the committed exam against the fetched texts with the SAME
+# strict evidence patterns authoring used (embedded per-pair): a pair
+# whose evidence no longer matches its source is named, loudly.
 missing_docs, mismatches = [], []
 for p_ in json.load(open("authored-verified.json")):
     path = Path(f"corpus/{p_['rfc']}.txt")
     if not path.exists():
         missing_docs.append(p_["rfc"])
         continue
-    text = path.read_text(errors="replace").lower()
-    key = p_["a"].split("\u2014")[0].split(",")[0].strip().lower()[:24]
-    if key and key not in text:
+    if not re.search(p_["evidence"], path.read_text(errors="replace")):
         mismatches.append((p_["rfc"], p_["q"][:50]))
 if missing_docs:
     print(f"WARNING: {len(missing_docs)} source RFC(s) failed to fetch: {sorted(set(missing_docs))}")
 for rfc, q in mismatches:
-    print(f"WARNING: key claim not found in {rfc}: {q}")
+    print(f"WARNING: evidence no longer matches {rfc}: {q}")
 print(f"exam verification: {len(mismatches)} mismatch(es), {len(missing_docs)} missing doc(s)")
 
 con = sqlite3.connect("standards.db")
