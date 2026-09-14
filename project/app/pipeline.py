@@ -73,13 +73,21 @@ def run(payload):
 # `python -m app.pipeline`, and a module that defines functions and
 # exits is a service that dies silently. This is the service.
 if __name__ == "__main__":
+    # Post-measurement ops hardening, updated to the 0.1.13 emission
+    # (threaded server, read deadlines, body cap, catch-all 500s,
+    # loopback bind by default) -- after the measured runs, labelled.
     import json as _json
     import os as _os
-    from http.server import BaseHTTPRequestHandler, HTTPServer
+    from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
     from app.contract import RefusedInput
 
+    MAX_BODY = int(_os.environ.get("MAX_BODY_BYTES", str(10 * 1024 * 1024)))
+
     class _Handler(BaseHTTPRequestHandler):
+        # A slow or malicious socket must cost one thread and one
+        # deadline, never the service.
+        timeout = 30
         def _send(self, code, body):
             data = _json.dumps(body, default=str).encode()
             self.send_response(code)
@@ -95,7 +103,21 @@ if __name__ == "__main__":
                 self._send(404, {"error": "POST / with a JSON payload"})
 
         def do_POST(self):
-            length = int(self.headers.get("Content-Length", 0))
+            if self.path != "/":
+                self._send(404, {"error": "POST / with a JSON payload"})
+                return
+            raw_length = self.headers.get("Content-Length")
+            if raw_length is None:
+                self._send(411, {"error": "Content-Length required"})
+                return
+            try:
+                length = int(raw_length)
+            except ValueError:
+                self._send(400, {"error": "Content-Length is not a number"})
+                return
+            if length < 0 or length > MAX_BODY:
+                self._send(413, {"error": "body too large"})
+                return
             try:
                 payload = _json.loads(self.rfile.read(length) or b"null")
             except ValueError:
@@ -105,10 +127,20 @@ if __name__ == "__main__":
                 self._send(200, {"result": run(payload)})
             except RefusedInput as refusal:
                 self._send(422, {"refused": str(refusal)})
+            except Exception as exc:  # noqa: BLE001
+                # A dropped connection tells the caller nothing; a
+                # 500 with the exception NAME (never a traceback)
+                # is a diagnosable failure.
+                self._send(500, {"error": type(exc).__name__,
+                                 "detail": str(exc)[:200]})
 
         def log_message(self, fmt, *args):
             print(fmt % args)
 
     port = int(_os.environ.get("PORT", "8080"))
-    print(f"serving on :{port} -- /health, POST /")
-    HTTPServer(("0.0.0.0", port), _Handler).serve_forever()
+    # Loopback by default: exposing the port is a deployment
+    # decision made in the unit file (Environment=BIND=...),
+    # never a default the code took alone.
+    bind = _os.environ.get("BIND", "127.0.0.1")
+    print(f"serving on {bind}:{port} -- /health, POST /")
+    ThreadingHTTPServer((bind, port), _Handler).serve_forever()
