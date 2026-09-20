@@ -93,6 +93,43 @@ proof. The retrieval layer's own measurement (100% recall@10 on the
 authored queries) is unchanged; `retrieval_cases.jsonl` ships in the
 build's evals.
 
+## Where it stands (fde 0.1.28)
+
+`fde stage` computes the engagement's stage off the record -- never declared --
+and appended the first transition to
+[`engagements/rfcqa/lifecycle.jsonl`](engagements/rfcqa/lifecycle.jsonl):
+
+```
+rfcqa: prototype
+
+  ok discovery
+       ok a problem statement: Answer engineers' protocol questions in plain prose from the internal standards ...
+  ok validation
+       ok the gates pass or are waived on the record: all pass
+       ok the exam is seeded from the client's pairs: 28 pairs
+       ok a holdout the delivery never ships: 10 cases
+       ok data access attested: sqlite standards.db returned 58 real documents (8.1MB, full text)
+  ok prototype
+       ok a build with its exam record: project-0.1.27
+  -- pilot
+       ok a scorecard on record: scorecard.json
+       NO the out-of-sample rows hold: 30.0% on 10 cases
+       ok the edge answers a valid request: 200 "The maximum length of a single DNS label is 63 octets, as s
+  -- production
+       NO a deployment on record: none: fde deployed <eng> --note
+       ok no open incident: none open
+  -- adoption
+       NO an adoption figure measured in the field: none: fde outcome <eng> --metric adoption=<share>
+  -- retrospective
+       NO a retrospective captured as a case: none: fde retro
+
+to reach pilot: the out-of-sample rows hold -- 30.0% on 10 cases
+
+recorded: start -> prototype (lifecycle.jsonl)
+```
+
+The record stops at prototype because the scorecard's out-of-sample row does not hold: 30.0% on 10 holdout cases, judged by a local model the calibration gate refused (19 graded pairs against a floor of 20). The stage is computed off that row, so an uncalibrated judge keeps the engagement out of pilot rather than letting a judged number carry it there.
+
 ## Reproduce it
 
 ```bash
