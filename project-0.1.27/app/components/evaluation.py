@@ -1,0 +1,94 @@
+# Advisory: decided and recorded at build time -- not a
+# step the payload passes through; the pipeline does not
+# chain this module.
+"""evaluation: judged, via plain-python.
+
+Judged: output_shape == freeform
+
+Freeform output graded against a rubric.
+
+Three rules, and the first two are non-negotiable.
+
+**The author never grades itself.** A model asked whether its own answer was
+good will say yes, and the resulting number measures nothing except its
+willingness to agree.
+
+**A judge is calibrated against human agreement before anyone trusts it.** An
+uncalibrated judge produces a confident number with no known relationship to
+quality, which is worse than no number because it stops the argument.
+
+**Where nothing may leave, the judge runs inside the boundary.** A metric that
+needs a hosted model is not a metric you have, and finding that out at
+deployment is finding it out too late.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Callable
+from typing import Any
+
+# Agreement with human graders below which the judge is not usable as a metric.
+MIN_HUMAN_AGREEMENT = 0.8
+
+
+class JudgeNotCalibrated(RuntimeError):
+    """Asked for a score from a judge whose agreement with people is unknown."""
+
+
+class SelfGrading(ValueError):
+    """The thing that produced the answer was asked to grade it."""
+
+
+class Evaluation:
+    """Scorer, as judged."""
+
+    interface = "Scorer"
+    approach = "judged"
+    stack = "plain-python"
+
+    def __init__(
+        self,
+        judge: Callable[[str, str, str], float] | None = None,
+        judge_id: str = "judge",
+        agreement: float | None = None,
+    ) -> None:
+        self.judge = judge
+        self.judge_id = judge_id
+        self.agreement = agreement
+
+    def calibrate(self, graded: list[dict[str, Any]]) -> dict[str, Any]:
+        """Compare the judge against people who already scored the same items."""
+        # Discrete verdicts agree or they do not -- the same rule as
+        # evals/calibrate.py, so there is one definition of "calibrated".
+        agreed = sum(1 for g in graded if g["judge"] == g["human"])
+        self.agreement = agreed / (len(graded) or 1)
+        return {
+            "agreement": self.agreement,
+            "minimum": MIN_HUMAN_AGREEMENT,
+            "usable": self.agreement >= MIN_HUMAN_AGREEMENT,
+            "n": len(graded),
+        }
+
+    def run(self, payload: dict[str, Any]) -> dict[str, Any]:
+        if payload.get("author") == self.judge_id:
+            raise SelfGrading(
+                f"{self.judge_id} produced this answer and cannot also score it"
+            )
+        if self.agreement is None or self.agreement < MIN_HUMAN_AGREEMENT:
+            raise JudgeNotCalibrated(
+                f"judge agreement with people is "
+                f"{'unmeasured' if self.agreement is None else round(self.agreement, 2)}; "
+                f"calibrate against at least {MIN_HUMAN_AGREEMENT:.0%} before using it"
+            )
+
+        scored = [
+            {"id": item["id"],
+             "score": self.judge(item["output"], item.get("reference", ""),
+                                 payload.get("rubric", ""))}
+            for item in payload.get("items", [])
+        ]
+        return {
+            "scored": scored,
+            "mean": sum(s["score"] for s in scored) / (len(scored) or 1),
+            "judge_agreement": self.agreement,
+        }

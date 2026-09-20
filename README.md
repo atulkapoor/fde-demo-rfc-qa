@@ -60,6 +60,39 @@ permanently is 301 and 308. ..."}
    and on distinctive queries over a small corpus, keyword search is
    simply done: 100% recall@10.
 
+## Rebuilt on the 0.1.27 emitter (2026-09-20)
+
+The framework has changed shape since this demo ran on 0.1.11 -- an HTTP
+edge, a boundary, a ledger, a scorecard -- so the same recorded engagement
+was built again as [`project-0.1.27/`](project-0.1.27/) and scored with
+`fde scorecard project-0.1.27 --holdout ...` through a local Ollama: the
+author `qwen3:0.6b`, the judge `dolphin-mistral`, a different model so the
+author does not grade itself. No agent has touched this build; it is what
+the framework emits from the recorded facts and the 28 authored pairs.
+
+**16 of 23 measured properties hold**, and the seven that do not are the
+honest state of a judged freeform exam this small:
+
+| Row | Measured |
+|---|---|
+| Golden, 12 cases | 58.3% |
+| Holdout, 10 cases never shipped | 30.0%; the card's sample floor is 30, so the row does not hold on size alone |
+| Judge calibration | none on record: the hand-graded set has 19 cases and the protocol's floor is 20, so every judged number above is marked not quotable |
+| Generalisation gap | 28 points |
+| Beats the baseline error rate | no: the stated baseline records 4% first-pass error, a 96% bar, on a 30% holdout |
+| Adversarial probes | 5 of 11, three failures attributed to misread bases, none followed |
+| Edge, valid request, the answer says why | hold: the edge refuses forged identities and results, answers a real question from the corpus, and cites what it stood on |
+
+The reading: a 28-pair exam over 58 RFCs with a 0.6-billion-parameter
+author and an uncalibrated judge cannot support a claim, and the card
+says so on four rows rather than averaging them away. What this rebuild
+adds over the 0.1.11 run is the machinery around the number: the exam
+record with every digest, the boot refusals, the request contract, and a
+card that refuses to count a 19-case calibration or a 10-case holdout as
+proof. The retrieval layer's own measurement (100% recall@10 on the
+authored queries) is unchanged; `retrieval_cases.jsonl` ships in the
+build's evals.
+
 ## Reproduce it
 
 ```bash

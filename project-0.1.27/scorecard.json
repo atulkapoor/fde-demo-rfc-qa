@@ -1,0 +1,174 @@
+{
+  "project": "/Users/atulkapoor/Documents/fde-demo-rfc-qa/project-0.1.27",
+  "verdict": "16 of 23 measured properties hold",
+  "rows": [
+    {
+      "property": "own tests",
+      "measured": "6 passed in 1.13s",
+      "holds": true,
+      "why": "the deliverable's own smoke and edge tests, model-free"
+    },
+    {
+      "property": "lint",
+      "measured": "clean",
+      "holds": true,
+      "why": ""
+    },
+    {
+      "property": "exam: golden",
+      "measured": "58.3% on 12 cases",
+      "holds": true,
+      "why": ""
+    },
+    {
+      "property": "exam: edge_case",
+      "measured": "57.1% on 7 cases",
+      "holds": true,
+      "why": ""
+    },
+    {
+      "property": "exam: adversarial",
+      "measured": "45.5% on 11 cases (0 followed, 3 on misread bases)",
+      "holds": false,
+      "why": ""
+    },
+    {
+      "property": "exam: verdict",
+      "measured": "the attack layer found takers -- 0 injection(s) followed, 3 answered wrong regardless of the injection (the base case is misread un-steered), 3 answered wrong u",
+      "holds": false,
+      "why": "the harness's own exit status at --min-score 0.0"
+    },
+    {
+      "property": "judge calibration",
+      "measured": "none on record",
+      "holds": false,
+      "why": "a judged score is not quotable until evals/calibrate.py passes"
+    },
+    {
+      "property": "exam record",
+      "measured": "every eval file matches its recorded digest",
+      "holds": true,
+      "why": ""
+    },
+    {
+      "property": "holdout",
+      "measured": "30.0% on 10 cases",
+      "holds": false,
+      "why": "cases the delivery never shipped; the harness's holdout floor applies"
+    },
+    {
+      "property": "holdout: sample size",
+      "measured": "10 cases",
+      "holds": false,
+      "why": "the protocol's floor for a blind sample is 30; the acceptance run itself is sized to the golden set"
+    },
+    {
+      "property": "holdout: the file on record",
+      "measured": "matches evals/manifest.json",
+      "holds": true,
+      "why": ""
+    },
+    {
+      "property": "generalisation gap",
+      "measured": "golden 58.3% - holdout 30.0% = +28.3%",
+      "holds": false,
+      "why": "past 20% the golden score describes the exam, not the system; a component that reads the holdout file defeats this row, which is what --external is for"
+    },
+    {
+      "property": "beats the baseline error rate",
+      "measured": "30.0% on the answered against a recorded first-pass accuracy of 96.0%",
+      "holds": false,
+      "why": "evals/acceptance.md: the baseline's error rate is the number to beat; measured on what the system answered, with the abstained share beside it"
+    },
+    {
+      "property": "external exam",
+      "measured": "not given",
+      "holds": null,
+      "why": "a second out-of-sample set (--external <jsonl>), e.g. the client's own later export; a component that memorises the holdout file scores 100% there and single digits here"
+    },
+    {
+      "property": "edge: boots",
+      "measured": "answers /health",
+      "holds": true,
+      "why": ""
+    },
+    {
+      "property": "edge: identity",
+      "measured": "401 without a token",
+      "holds": true,
+      "why": "no token, no service, with a request id"
+    },
+    {
+      "property": "edge: forged result",
+      "measured": "422",
+      "holds": true,
+      "why": "a caller cannot hand the pipeline its own answer"
+    },
+    {
+      "property": "edge: forged identity",
+      "measured": "422",
+      "holds": true,
+      "why": ""
+    },
+    {
+      "property": "edge: malformed body",
+      "measured": "400",
+      "holds": true,
+      "why": ""
+    },
+    {
+      "property": "edge: a valid request",
+      "measured": "200 \"The maximum length of a single DNS label is 63 octets, as s",
+      "holds": true,
+      "why": "the exam's own first case through the edge; refusals alone proved a service that failed every real request"
+    },
+    {
+      "property": "edge: the answer says why",
+      "measured": "yes",
+      "holds": true,
+      "why": "an answer names what it stood on: scores and carrying tokens, cited evidence, or who decided"
+    },
+    {
+      "property": "edge: readiness",
+      "measured": "200 ready",
+      "holds": null,
+      "why": "judged where nothing external is needed; with a model seam it depends on the deployment's endpoint and is reported only"
+    },
+    {
+      "property": "risk register: scaffolds",
+      "measured": "none",
+      "holds": true,
+      "why": "a scaffold raises on use; a green exam cannot include it"
+    },
+    {
+      "property": "risk register: gates waived",
+      "measured": "offline_evaluability",
+      "holds": null,
+      "why": "reported, not judged: a waiver is the engagement's decision, on the record"
+    },
+    {
+      "property": "risk register: asserted facts",
+      "measured": "1 boundary-bearing fact(s) asserted",
+      "holds": null,
+      "why": "reported: confirm each with the client before the decisions resting on it stand"
+    },
+    {
+      "property": "environment",
+      "measured": "every variable the code reads is documented",
+      "holds": true,
+      "why": ""
+    },
+    {
+      "property": "training path",
+      "measured": "none in this build",
+      "holds": null,
+      "why": ""
+    },
+    {
+      "property": "regression from the last card",
+      "measured": "none",
+      "holds": true,
+      "why": "tolerance 2%"
+    }
+  ]
+}

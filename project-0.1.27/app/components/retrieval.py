@@ -1,0 +1,185 @@
+"""retrieval: keyword-search, via plain-python.
+
+Keyword search: query_pattern == lookup
+
+One lexical tier: term frequency against inverse document frequency over a
+postings index. Unfashionable and hard to beat when the query contains the
+token the answer contains -- which is most of the time in a document
+corpus -- and it runs with no model, no vector store and no GPU, which is
+what lets it live inside a boundary.
+
+Cost is proportional to the documents a query's tokens actually appear in,
+never to the corpus: the index is a postings list per token, not a scan.
+A query is capped in tokens, because an uncapped one once cost 5.7 seconds
+of CPU per request at a tenth of the stated corpus.
+
+Scoring is BM25 -- term frequency saturates and long chunks stop winning by
+length alone. Tokens come in three kinds for a query: INFORMATIVE (in a
+minority of documents), UBIQUITOUS (in most of them: the, of, and on a
+homogeneous corpus the domain word itself) and UNKNOWN (in none). When any
+informative token matches, only documents sharing one are ranked, so
+"How do I reset the payroll database?" cannot cite an HTTP document on the
+strength of "the". When none does but the query is mostly words the corpus
+knows -- "What is the policy?" on a corpus where every document says
+policy -- the ubiquitous tokens rank it, weakly, rather than nothing at
+all: a hard cut here once returned zero evidence for every question over
+a one-document corpus. When the query is mostly words the corpus has never
+seen, that is a miss, and `retrieval_note` says which case it was.
+
+Memory: between five and twenty-five megabytes per megabyte of corpus text
+depending on vocabulary size (measured both ends); the deploy sizes
+MemoryMax and CORPUS_MAX_MB from the top of that range. Beyond a hundred
+megabytes of text the postings belong on disk (SQLite FTS5 is in the
+standard library); that is a realization swap, not a redesign.
+
+Where a semantic tier is later earned, the `hybrid-search` approach fuses
+the two on rank; this module deliberately does not carry that machinery.
+"""
+
+from __future__ import annotations
+
+import math
+import re
+from collections import Counter, defaultdict
+from typing import Any
+
+from app.shapes import require
+
+TOKEN = re.compile(r"[A-Za-z0-9][A-Za-z0-9-]*")
+# Tokens of a query that are scored -- enough for the longest question the
+# envelope accepts, so an identifier at the end of a pasted paragraph is
+# never silently invisible. Truncation, if it ever happens, is noted.
+MAX_QUERY_TOKENS = 512
+# BM25's two constants, at their conventional values.
+K1 = 1.5
+B = 0.75
+# A token in more than this share of the corpus is ubiquitous: it cannot
+# make a document relevant on its own while an informative token could.
+UBIQUITOUS_SHARE = 0.5
+# Function words carry no evidence at any frequency. Without this list,
+# "the" in every document ranked an HTTP page for a payroll question; with
+# a frequency cut alone, "policy" in every HR document ranked nothing.
+STOPWORDS = frozenset("""
+a an the and or but if then else of in on at to for from by with without
+about as into onto over under is are was were be been being am do does did
+doing have has had having i me my we our you your he she it its they them
+their this that these those what which who whom whose where when why how
+not no nor so than too very can could will would shall should may might
+must here there up down out off again further once all any both each few
+more most other some such only own same
+""".split())
+
+
+class Retrieval:
+    """Retriever, as keyword-search."""
+
+    interface = "Retriever"
+    approach = "keyword-search"
+    stack = "plain-python"
+
+    def __init__(self) -> None:
+        self._documents: dict[str, str] = {}
+        self._sources: dict[str, str] = {}
+        self._lengths: dict[str, int] = {}
+        # Why the last query matched the way it did -- for the envelope.
+        self.last_note = ""
+        # token -> {doc_id: count}. The postings list is what makes a
+        # query cost what it matches rather than what the corpus holds --
+        # and it is the ONLY token structure: a second per-document
+        # Counter, kept only to retire postings on re-index, was half the
+        # footprint of the whole index.
+        self._postings: dict[str, dict[str, int]] = defaultdict(dict)
+
+    def index(self, documents: list[dict[str, Any]]) -> None:
+        for document in documents:
+            doc_id = str(document["id"])
+            # Re-indexing a document first retires its old postings, or the
+            # document frequency drifts above the document count and the
+            # ranking quietly rots on every corpus refresh.
+            if doc_id in self._documents:
+                # Re-index is rare (a corpus update is a restart); paying a
+                # scan of the vocabulary here is cheaper than carrying every
+                # document's token counts in memory for the lifetime of it.
+                for posting in self._postings.values():
+                    posting.pop(doc_id, None)
+            tokens = self._tokenise(document["text"])
+            self._documents[doc_id] = document["text"]
+            self._sources[doc_id] = str(document.get("source", doc_id))
+            self._lengths[doc_id] = len(tokens)
+            for token, count in Counter(tokens).items():
+                self._postings[token][doc_id] = count
+
+    def __len__(self) -> int:
+        return len(self._documents)
+
+    def retrieve(self, query: str, k: int = 5) -> list[dict[str, Any]]:
+        """Lexical results, ranked. Where a semantic tier exists, its ranking
+        is fused with this one rather than averaged against it."""
+        ranked = self._lexical(query)
+        return [
+            {"id": doc_id, "source": self._sources.get(doc_id, doc_id),
+             "text": self._documents[doc_id], "rank": position + 1,
+             "score": round(score, 4)}
+            for position, (doc_id, score) in enumerate(ranked[:k])
+        ]
+
+    def run(self, payload: dict[str, Any]) -> dict[str, Any]:
+        """Envelope in, envelope out: `query` -> `retrieved`, plus a
+        `retrieval_note` saying HOW the query matched, so an empty result
+        is never the same sentence as a genuine miss."""
+        query = require(payload, "query", str, non_empty=True)
+        hits = self.retrieve(query, k=payload.get("k", 5))
+        return {**payload, "retrieved": hits, "retrieval_note": self.last_note}
+
+    # -- lexical ----------------------------------------------------------
+
+    def _lexical(self, query: str) -> list[tuple[str, float]]:
+        """BM25 over the postings, informative tokens only.
+
+        Unfashionable and hard to beat when the query contains the token the
+        answer contains -- which is most of the time in a document corpus.
+        A document that shares only stopwords with the query is not ranked
+        low; it is not ranked at all.
+        """
+        total = len(self._documents)
+        if not total:
+            self.last_note = "the index is empty"
+            return []
+        raw = self._tokenise(query)
+        # Truncation is noted on EVERY path: a miss after a cut once read
+        # byte-for-byte like a genuine miss, and the operator had no way
+        # to tell "nothing relevant" from "your question was cut off".
+        cut = ""
+        if len(raw) > MAX_QUERY_TOKENS:
+            cut = f" (query truncated to {MAX_QUERY_TOKENS} tokens)"
+        tokens = [t for t in raw[:MAX_QUERY_TOKENS] if t not in STOPWORDS]
+        if not tokens:
+            self.last_note = "the query is only function words" + cut
+            return []
+        ceiling = UBIQUITOUS_SHARE * total
+        informative = [t for t in tokens
+                       if t in self._postings and len(self._postings[t]) <= ceiling]
+        known = [t for t in tokens if t in self._postings]
+        if informative:
+            scored, note = informative, "ranked by informative terms"
+        elif known:
+            scored, note = known, "no informative term; ranked by terms common to the corpus"
+        else:
+            self.last_note = "none of the query's terms appear in the corpus" + cut
+            return []
+        self.last_note = note + cut
+        average_length = sum(self._lengths.values()) / total
+        scores: dict[str, float] = defaultdict(float)
+        for token in scored:
+            posting = self._postings[token]
+            idf = math.log(1 + (total - len(posting) + 0.5) / (len(posting) + 0.5))
+            for doc_id, count in posting.items():
+                norm = 1 - B + B * self._lengths[doc_id] / (average_length or 1)
+                scores[doc_id] += idf * count * (K1 + 1) / (count + K1 * norm)
+        return sorted(scores.items(), key=lambda item: (-item[1], item[0]))
+
+    @staticmethod
+    def _tokenise(text: str) -> list[str]:
+        # Identifiers are kept whole. Splitting SKU-99312 into two tokens is
+        # how a lexical tier loses the one thing it is better at.
+        return [t.lower() for t in TOKEN.findall(text)]

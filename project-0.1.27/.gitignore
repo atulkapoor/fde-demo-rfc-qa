@@ -1,0 +1,10 @@
+__pycache__/
+*.py[co]
+.venv/
+var/
+*.sqlite3
+.implement/
+.ruff_cache/
+.pytest_cache/
+train/data/
+artifacts/

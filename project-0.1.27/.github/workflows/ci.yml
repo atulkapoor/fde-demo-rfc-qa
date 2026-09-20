@@ -1,0 +1,86 @@
+name: ci
+on:
+  push:
+  pull_request:
+    # Fork PRs never receive repository variables here, so no
+    # endpoint inside the network is reachable from a stranger's
+    # branch; the model-free lanes still run for them.
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: pip install -e . pytest
+
+      # The deliverable's own tests: the contract, the fence, the
+      # harness's refusal of an empty exam, and every promise the
+      # HTTP edge makes, asserted against the booted service --
+      # model-free, seconds.
+      - name: Smoke and edge
+        run: python -m pytest -q tests/
+      # Importing this asserts placement. Data that may not leave
+      # cannot leave by construction, and a change that moves a
+      # sensitive component outside fails here rather than in review.
+      - name: Assert the boundary
+        run: python -c "import app.boundary"
+      # The embedding and index set a ceiling on everything
+      # downstream -- no reranking or prompting recovers a
+      # document that was never retrieved. This measures the
+      # ceiling by itself, no model in the loop.
+      - name: Evaluate retrieval
+        run: python evals/retrieval.py --min-recall 0.0
+      # The judged evaluation sends golden references and answers to
+      # a model, and this build's data may not leave -- so it runs
+      # only on a runner inside the boundary, never GitHub's. Label
+      # a self-hosted runner `inside-boundary` to enable it.
+      - name: Evaluate (inside the boundary only)
+        if: >-
+          ${{ contains(runner.labels, 'inside-boundary')
+          && vars.LLM_ENDPOINT != '' }}
+        env:
+          LLM_ENDPOINT: ${{ vars.LLM_ENDPOINT }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
+          # The judge is not the author: a different model or endpoint.
+          JUDGE_ENDPOINT: ${{ vars.JUDGE_ENDPOINT }}
+          JUDGE_MODEL: ${{ vars.JUDGE_MODEL }}
+        run: python evals/harness.py --min-score 0.0 --report harness-report.json
+      # Every layer and every failure, kept beside the run -- the
+      # console shows the first few; a regression is diffed from here.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: harness-report
+          path: harness-report.json
+          if-no-files-found: ignore
+
+  # The out-of-sample gate. The holdout never ships in this repository,
+  # so it is scored where it lives: on a self-hosted runner that holds
+  # the engagement's artifacts/holdout.jsonl at the path the repository
+  # variable HOLDOUT_PATH names. Until that is configured, the lane
+  # does not run and the golden layer above is the only score -- an
+  # in-sample one wherever the baseline is fitted on it.
+  holdout:
+    if: ${{ vars.HOLDOUT_PATH != '' }}
+    runs-on: [self-hosted, holds-the-exam]
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -e .
+      - name: Score the holdout
+        env:
+          LLM_ENDPOINT: ${{ vars.LLM_ENDPOINT }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
+          JUDGE_ENDPOINT: ${{ vars.JUDGE_ENDPOINT }}
+          JUDGE_MODEL: ${{ vars.JUDGE_MODEL }}
+        run: >-
+          python evals/harness.py --cases "${{ vars.HOLDOUT_PATH }}"
+          --report holdout-report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: holdout-report
+          path: holdout-report.json
+          if-no-files-found: ignore

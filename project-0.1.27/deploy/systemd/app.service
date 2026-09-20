@@ -1,0 +1,73 @@
+# Rung zero, and frequently the right answer rather than the lesser one.
+# Understood by anyone who has administered a Linux box, restarts on
+# failure, starts on boot, and adds nothing anybody has to learn.
+[Unit]
+Description=Generated application
+After=network-online.target
+Wants=network-online.target
+
+# A crash loop is a signal, not a lifestyle: five restarts in two
+# minutes stops the unit so the journal can be read in peace.
+StartLimitIntervalSec=120
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=app
+# Releases live side by side; `current` is a symlink, which is what
+# makes ops/rollback.md one atomic command instead of a re-install.
+WorkingDirectory=/opt/app/current
+# One configuration story: defaults here, overrides in the env
+# file. Unbuffered stdout so journalctl shows the truth at 3am. The
+# env file is required: a service that boots without its
+# configuration is a service serving traffic misconfigured.
+Environment=PYTHONUNBUFFERED=1
+Environment=STATE_DIR=/var/lib/app
+EnvironmentFile=/etc/app/env
+ExecStart=/opt/app/current/.venv/bin/python -m app.service
+Restart=on-failure
+RestartSec=5
+# Exit 78 is EX_CONFIG: the service refused its configuration with
+# one clear line. Restarting it would only repeat the line.
+RestartPreventExitStatus=78
+# Drain: SIGTERM lets in-flight requests finish; the kill comes later.
+KillSignal=SIGTERM
+TimeoutStopSec=45
+# Least privilege costs nothing here and is awkward to add later.
+# StateDirectory creates /var/lib/app owned by the service user.
+StateDirectory=app
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallFilter=@system-service
+SystemCallArchitectures=native
+CapabilityBoundingSet=
+UMask=0077
+# Resource ceilings: a thread-per-connection server without them is
+# a denial of service one slow client away. The memory budget is
+# the index (five to twenty-five megabytes per megabyte of corpus
+# text by vocabulary, measured -- CORPUS_MAX_MB must agree with this)
+# plus TasksMax x MAX_BODY_BYTES of request bodies in flight.
+TasksMax=128
+MemoryMax=2G
+LimitNOFILE=4096
+# Data may not leave: the kernel allows loopback and private ranges
+# only. Add the model server's address here if it lives elsewhere.
+IPAddressDeny=any
+IPAddressAllow=localhost 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 fc00::/7
+
+[Install]
+WantedBy=multi-user.target

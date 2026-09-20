@@ -1,0 +1,73 @@
+"""representation: segmentation, via plain-python.
+
+Segmentation: output_shape == freeform
+
+Documents into retrievable chunks with their origins attached. Fixed
+windows with overlap, deliberately boring: semantic splitting is a
+graduation to earn with measured retrieval quality, not a default.
+
+Traceability is the non-negotiable half. Every chunk carries its source
+and character offsets, so every generated sentence can point back at where
+it came from -- an unverifiable answer inside a client's environment is a
+liability wearing a feature's clothes.
+"""
+
+from __future__ import annotations
+
+import hashlib
+from typing import Any
+
+from app.shapes import documents_of
+
+# Sized for retrieval, not for reading: long enough to carry an answer,
+# short enough that a ranker can tell chunks apart.
+WINDOW = 1200
+OVERLAP = 200
+
+
+class Representation:
+    """Parser, as segmentation."""
+
+    interface = "Parser"
+    approach = "segmentation"
+    stack = "plain-python"
+
+    def __init__(self, window: int = WINDOW, overlap: int = OVERLAP) -> None:
+        if overlap >= window:
+            raise ValueError("overlap must be smaller than the window")
+        self.window = window
+        self.overlap = overlap
+
+    def run(self, payload: dict[str, Any]) -> dict[str, Any]:
+        chunks = []
+        # What perception read, or the raw documents when nothing read them.
+        units = payload.get("records") or documents_of(payload)
+        for document in units:
+            text = document.get("text", "")
+            source = str(document.get("id", "unknown"))
+            start = 0
+            while start < len(text):
+                end = min(start + self.window, len(text))
+                body = text[start:end]
+                chunks.append({
+                    # Stable identity: same corpus, same chunks, same ids --
+                    # a diff between two indexes means the corpus changed.
+                    "id": hashlib.sha256(
+                        f"{source}:{start}:{body}".encode()
+                    ).hexdigest()[:16],
+                    "source": source,
+                    "start": start,
+                    "end": end,
+                    "text": body,
+                })
+                if end == len(text):
+                    break
+                start = end - self.overlap
+        return {
+            **payload,
+            "chunks": chunks,
+            "document_count": len(units),
+            # The number an index is sized from, and the denominator any
+            # retrieval-quality measurement divides by.
+            "chunk_count": len(chunks),
+        }
