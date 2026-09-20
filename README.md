@@ -130,6 +130,14 @@ recorded: start -> prototype (lifecycle.jsonl)
 
 The record stops at prototype because the scorecard's out-of-sample row does not hold: 30.0% on 10 holdout cases, judged by a local model the calibration gate refused (19 graded pairs against a floor of 20). The stage is computed off that row, so an uncalibrated judge keeps the engagement out of pilot rather than letting a judged number carry it there.
 
+On 0.1.31 the eighth gate, the outcome contract (who owns the number the
+system exists to move, its value today, its target, how it is measured, by
+when), is waived on this record with the reason where a reader will find
+it: no client owns an outcome in a public demonstration, and nobody has set
+a target. `fde debt engagements/rfcqa` ([`debt.txt`](debt.txt)) lists what
+the engagement rests on that nobody has settled: 10 items: two environment facts said and never measured, three roles never heard, two standing waivers (the judge's calibration and the outcome contract), and three entries with nobody's name on them. None blocks the
+build or production; the waivers age from today.
+
 ## Reproduce it
 
 ```bash

@@ -1,0 +1,36 @@
+$ fde debt engagements/rfcqa
+rfcqa: decision debt as of 2026-09-20
+
+  open (10)
+    waiver         offline_evaluability: local judge qwen3:0.6b on Ollama; calibration against the eval owner's hand grades runs BEFORE any judged number is quoted -- published prediction: it fails the bar (SLMJury 67.9%)
+                   owner: eval_owner  7 day(s)
+                   next: meet the gate, or restate the waiver if it still holds
+    waiver         outcome_contract: no client owns an outcome: a public demonstration on IETF RFCs; the baseline's business metric is stated, and nobody has set a target
+                   owner: the author  0 day(s)
+                   next: meet the gate, or restate the waiver if it still holds
+    stated         accelerator = none: said by Atul Kapoor (admin), measurable but not measured
+                   owner: admin
+                   next: measure it: fde scan, or a document the client owns
+    stated         existing_iac_tool = none: said by Atul Kapoor (admin), measurable but not measured
+                   owner: admin
+                   next: measure it: fde scan, or a document the client owns
+    unsigned       data_access (2026-09-13)
+                   owner: unsigned  7 day(s)
+                   next: re-record with --by, or leave it and know it
+    unsigned       security_review (2026-09-13)
+                   owner: unsigned  7 day(s)
+                   next: re-record with --by, or leave it and know it
+    unsigned       waiver offline_evaluability (2026-09-13)
+                   owner: unsigned  7 day(s)
+                   next: re-record with --by, or leave it and know it
+    unheard        sponsor has never been asked
+                   owner: sponsor
+                   next: fde ask <eng> --role sponsor
+    unheard        user has never been asked
+                   owner: user
+                   next: fde ask <eng> --role user
+    unheard        skeptic has never been asked
+                   owner: skeptic
+                   next: fde ask <eng> --role skeptic
+
+10 item(s): 0 blocking the build, 0 blocking production, 0 older than 30 days, 3 unsigned

@@ -12,3 +12,10 @@ overrides:
     fails the bar (SLMJury 67.9%)'
   at: '2026-09-13'
   against: Freeform output needs a judge, and nothing may leave here.
+- gate: outcome_contract
+  reason: 'no client owns an outcome: a public demonstration on IETF RFCs; the baseline''s
+    business metric is stated, and nobody has set a target'
+  at: '2026-09-20'
+  against: 'Nobody has agreed which number this system exists to move: no outcome
+    contract was recorded.'
+  by: the author
